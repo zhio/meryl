@@ -32,11 +32,11 @@ func NewRouter() *gin.Engine {
 			auth.GET("user/me", api.UserMe)
 			auth.DELETE("user/logout", api.UserLogout)
 
-			//auth.GET("codebook/:id",api.ShowCode)
+			auth.GET("codebook/:id", api.ShowCode)
 			auth.POST("codebooks", api.CreateCode)
-			//auth.GET("codebooks",api.ListCode)
-			//auth.PUT("codebook/:id",api.UpdateCode)
-			//auth.DELETE("codebook/:id",api.DeleteCode)
+			auth.GET("codebooks", api.ListCode)
+			auth.PUT("codebook/:id", api.UpdateCode)
+			auth.DELETE("codebook/:id", api.DeleteCode)
 		}
 	}
 	return r

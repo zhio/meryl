@@ -47,7 +47,6 @@ func (service *CreateCodeBookService) Create() serializer.Response {
 	if err := service.valid(); err != nil {
 		return *err
 	}
-	// todo 表单校验
 	// 加密密码
 	if err := codebook.EncryptCode(service.Code); err != nil {
 		return serializer.Err(

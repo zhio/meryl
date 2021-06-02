@@ -15,22 +15,34 @@ type CodeBook struct {
 	UpdateAt int64  `json:"update_at"`
 }
 
-func BuildCodeBook(codebook model.CodeBook) CodeBook {
+func BuildCodeBook(item model.CodeBook) CodeBook {
 	return CodeBook{
-		ID:       codebook.ID,
-		Title:    codebook.Title,
-		Alias:    codebook.Alias,
-		Username: codebook.Username,
-		Code:     codebook.DecryptCode(),
-		Nodes:    codebook.Notes,
-		Status:   codebook.Status,
-		CreateAt: codebook.CreatedAt.Unix(),
-		UpdateAt: codebook.UpdatedAt.Unix(),
+		ID:       item.ID,
+		Title:    item.Title,
+		Alias:    item.Alias,
+		Username: item.Username,
+		Code:     item.DecryptCode(),
+		Nodes:    item.Notes,
+		Status:   item.Status,
+		CreateAt: item.CreatedAt.Unix(),
+		UpdateAt: item.UpdatedAt.Unix(),
 	}
 }
-
+func BuildCodeBooks(items []model.CodeBook) (codebooks []CodeBook) {
+	for _, item := range items {
+		codebook := BuildCodeBook(item)
+		codebooks = append(codebooks, codebook)
+	}
+	return codebooks
+}
 func BuildCodeBookResponse(codebook model.CodeBook) Response {
 	return Response{
 		Data: BuildCodeBook(codebook),
+	}
+}
+
+func BuildCodeBooksResponse(codebooks []model.CodeBook) Response {
+	return Response{
+		Data: BuildCodeBooks(codebooks),
 	}
 }
