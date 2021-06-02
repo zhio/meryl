@@ -8,4 +8,5 @@ func migration() {
 	//自动迁移模式
 	fmt.Print("初始化成功ok")
 	_ = DB.AutoMigrate(&User{})
+	_ = DB.AutoMigrate(&CodeBook{})
 }
