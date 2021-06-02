@@ -13,9 +13,18 @@ type CodeBook struct {
 	Alias    string
 	Username string
 	Code     string
+	IP       string
+	Address  string
 	Notes    string `gorm:"size:1000"`
 	Status   string
 }
+
+const (
+	// NewVersion 正在使用的
+	NewVersion string = "new"
+	// OldVersion 老版本的
+	OldVersion string = "old"
+)
 
 // EncryptCode 加密密码
 func (codebook *CodeBook) EncryptCode(code string) error {
@@ -24,7 +33,6 @@ func (codebook *CodeBook) EncryptCode(code string) error {
 	if err != nil {
 		return err
 	}
-	//codebook.Code = base64.StdEncoding.EncodeToString(encrypted)
 	codebook.Code = base64.StdEncoding.EncodeToString(encrypted)
 	return nil
 }

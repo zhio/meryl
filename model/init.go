@@ -43,7 +43,6 @@ func Database(connString string) {
 	sqlDB.SetMaxIdleConns(10)
 	//打开
 	sqlDB.SetMaxOpenConns(20)
-	print("链接成功")
 	DB = db
 	//初始化
 	migration()

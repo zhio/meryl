@@ -42,7 +42,7 @@ func (service *CreateCodeBookService) Create() serializer.Response {
 		Alias:    service.ALias,
 		Username: service.Username,
 		Notes:    service.Nodes,
-		Status:   model.Active,
+		Status:   model.NewVersion,
 	}
 	if err := service.valid(); err != nil {
 		return *err

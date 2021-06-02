@@ -25,6 +25,7 @@ func NewRouter() *gin.Engine {
 		//用户登陆
 		v1.POST("user/login", api.UserLogin)
 
+		v1.POST("/makekey", api.MakeNewKey)
 		// 需要登陆保护的
 		auth := v1.Group("")
 		auth.Use(middleware.AuthRequired())
