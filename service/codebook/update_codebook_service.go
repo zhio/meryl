@@ -1,6 +1,7 @@
 package codebook
 
 import (
+	"encoding/json"
 	"meryl/model"
 	"meryl/serializer"
 )
@@ -8,11 +9,11 @@ import (
 // UpdateCodeBookService 更新密码本服务
 type UpdateCodeBookService struct {
 	Title       string `form:"title" json:"title" binding:"min=2,max=30"`
-	ALias       string `form:"alias" json:"alias" binding:"max=200"`
+	Alias       string `form:"alias" json:"alias" binding:"max=200"`
 	Username    string `form:"username" json:"username" binding:"min=2,max=30"`
 	Code        string `form:"code" json:"code" binding:"required,min=8,max=40"`
 	CodeConfirm string `form:"code_confirm" json:"code_confirm" binding:"min=8,max=40"`
-	Nodes       string `form:"nodes" json:"nodes"`
+	Notes       string `form:"nodes" json:"nodes"`
 }
 
 // valid 验证表单
@@ -25,7 +26,7 @@ func (service *UpdateCodeBookService) valid() *serializer.Response {
 	}
 
 	count := int64(0)
-	model.DB.Model(&model.CodeBook{}).Where("alias = ?", service.ALias).Count(&count)
+	model.DB.Model(&model.CodeBook{}).Where("alias = ?", service.Alias).Count(&count)
 
 	if count > 0 {
 		return &serializer.Response{
@@ -61,11 +62,11 @@ func (service *UpdateCodeBookService) Update(id string) serializer.Response {
 	if service.Title != "" {
 		codebook.Title = service.Title
 	}
-	if service.ALias != "" {
-		codebook.Alias = service.ALias
+	if service.Alias != "" {
+		codebook.Alias = service.Alias
 	}
-	if service.Nodes != "" {
-		codebook.Notes = service.Nodes
+	if service.Notes != "" {
+		codebook.Notes = service.Notes
 	}
 	if service.Username != "" {
 		codebook.Username = service.Username
@@ -76,4 +77,36 @@ func (service *UpdateCodeBookService) Update(id string) serializer.Response {
 		return serializer.DBErr("", err)
 	}
 	return serializer.BuildCodeBookResponse(codebook)
+}
+
+//包含历史版本的更新操作
+func (service *UpdateCodeBookService) UpdateByHistory(id string) serializer.Response {
+	var codebook model.CodeBook
+	err := model.DB.First(&codebook, id).Error
+	if err != nil {
+		return serializer.Err(
+			serializer.CodeNotFound,
+			"密码本不存在",
+			err,
+		)
+	}
+	bytes, _ := json.Marshal(service)
+	var dataModel model.CodeBook
+	json.Unmarshal(bytes, &dataModel)
+
+	updates := model.DB.Model(&codebook).Updates(&dataModel)
+
+	if updates.RowsAffected > 0 {
+		return serializer.Response{
+			Code: 200,
+			Msg:  "更新成功",
+			Data: "ok",
+		}
+	} else {
+		return serializer.Response{
+			Code: 500,
+			Msg:  "更新失败",
+			Data: updates.Error,
+		}
+	}
 }

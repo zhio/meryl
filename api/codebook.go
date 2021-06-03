@@ -34,8 +34,8 @@ func ListCode(c *gin.Context) {
 // UpdateCode 更新密码
 func UpdateCode(c *gin.Context) {
 	var service codebook.UpdateCodeBookService
-	if err := c.ShouldBind(&service); err == nil {
-		var res = service.Update(c.Param("id"))
+	if err := c.ShouldBindJSON(&service); err == nil {
+		var res = service.UpdateByHistory(c.Param("id"))
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, ErrorResponse(err))

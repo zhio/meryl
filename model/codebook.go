@@ -13,8 +13,6 @@ type CodeBook struct {
 	Alias    string
 	Username string
 	Code     string
-	IP       string
-	Address  string
 	Notes    string `gorm:"size:1000"`
 	Status   string
 }

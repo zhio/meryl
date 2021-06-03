@@ -7,8 +7,6 @@ import (
 type History struct {
 	gorm.Model
 	CodeId   string
-	IP       string
-	Address  string
 	Title    string
 	Alias    string
 	Username string
