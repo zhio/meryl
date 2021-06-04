@@ -2,7 +2,7 @@ package serializer
 
 import "meryl/model"
 
-// User 用户序列化器
+// CodeBook 用户序列化器
 type CodeBook struct {
 	ID       uint   `json:"id"`
 	Title    string `json:"title"`
@@ -44,5 +44,15 @@ func BuildCodeBookResponse(codebook model.CodeBook) Response {
 func BuildCodeBooksResponse(codebooks []model.CodeBook) Response {
 	return Response{
 		Data: BuildCodeBooks(codebooks),
+	}
+}
+
+func BuildCodeBookWithHistoryResponse(codebook model.CodeBook, histories []model.History) Response {
+	CodeBookWithHistory := make(map[string]interface{})
+	CodeBookWithHistory["codebook"] = BuildCodeBook(codebook)
+	CodeBookWithHistory["history"] = BuildHistories(histories)
+
+	return Response{
+		Data: CodeBookWithHistory,
 	}
 }

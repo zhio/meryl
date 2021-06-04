@@ -20,7 +20,7 @@ func CreateCode(c *gin.Context) {
 // ShowCode 密码本详情
 func ShowCode(c *gin.Context) {
 	var service codebook.ShowCodeBookService
-	var res = service.Show(c.Param("id"))
+	var res = service.ShowWithHistry(c.Param("id"))
 	c.JSON(http.StatusOK, res)
 }
 
@@ -35,7 +35,7 @@ func ListCode(c *gin.Context) {
 func UpdateCode(c *gin.Context) {
 	var service codebook.UpdateCodeBookService
 	if err := c.ShouldBindJSON(&service); err == nil {
-		var res = service.UpdateByHistory(c.Param("id"))
+		var res = service.UpdateWithHistory(c.Param("id"))
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, ErrorResponse(err))

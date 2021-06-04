@@ -2,6 +2,7 @@ package codebook
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"meryl/model"
 	"meryl/serializer"
 )
@@ -80,7 +81,7 @@ func (service *UpdateCodeBookService) Update(id string) serializer.Response {
 }
 
 //包含历史版本的更新操作
-func (service *UpdateCodeBookService) UpdateByHistory(id string) serializer.Response {
+func (service *UpdateCodeBookService) UpdateWithHistory(id string) serializer.Response {
 	var codebook model.CodeBook
 
 	err := model.DB.First(&codebook, id).Error
@@ -102,10 +103,6 @@ func (service *UpdateCodeBookService) UpdateByHistory(id string) serializer.Resp
 		Status:   model.Inactive,
 	}
 
-	if err := model.DB.Create(&history).Error; err != nil {
-		return serializer.ParamErr("添加历史记录失败", err)
-	}
-
 	bytes, _ := json.Marshal(service)
 	var dataModel model.CodeBook
 	json.Unmarshal(bytes, &dataModel)
@@ -118,19 +115,25 @@ func (service *UpdateCodeBookService) UpdateByHistory(id string) serializer.Resp
 			err,
 		)
 	}
-	updates := model.DB.Model(&codebook).Updates(&dataModel)
 
-	if updates.RowsAffected > 0 {
+	//执行事务同时更新数据和记录到历史表中
+	err = model.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&history).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&codebook).Updates(&dataModel).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err == nil {
 		return serializer.Response{
 			Code: 200,
 			Msg:  "更新成功",
 			Data: "ok",
 		}
 	} else {
-		return serializer.Response{
-			Code: 500,
-			Msg:  "更新失败",
-			Data: updates.Error,
-		}
+		return serializer.DBErr("更新失败", err)
 	}
 }
