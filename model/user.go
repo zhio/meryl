@@ -3,6 +3,10 @@ package model
 import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"meryl/cache"
+	"meryl/util"
+	"strconv"
+	"time"
 )
 
 type User struct {
@@ -46,4 +50,20 @@ func (user *User) SetPassword(password string) error {
 func (user *User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(password))
 	return err == nil
+}
+
+// UserID 返回string版的uid
+func (user *User) UserID() string {
+	return strconv.Itoa(int(user.ID))
+}
+
+// MakeToken 生成token
+func (user *User) MakeToken() (string, int64, error) {
+	token := util.RandStringRunes(15)
+	exp := 14 * 24 * time.Hour
+	tokenExpire := time.Now().Add(exp).Unix()
+	if err := cache.SaveUserToken(token, user.UserID(), exp); err != nil {
+		return "", 0, err
+	}
+	return token, tokenExpire, nil
 }

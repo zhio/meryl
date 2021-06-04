@@ -32,6 +32,7 @@ func NewRouter() *gin.Engine {
 		{
 			auth.GET("user/me", api.UserMe)
 			auth.DELETE("user/logout", api.UserLogout)
+			auth.POST("user/refresh", api.UserTokenRefresh)
 
 			auth.GET("codebook/:id", api.ShowCode)
 			auth.POST("codebooks", api.CreateCode)
