@@ -9,4 +9,5 @@ func migration() {
 	fmt.Print("初始化成功ok")
 	_ = DB.AutoMigrate(&User{})
 	_ = DB.AutoMigrate(&CodeBook{})
+	_ = DB.AutoMigrate(&History{})
 }

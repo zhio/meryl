@@ -8,11 +8,11 @@ import (
 // CreateCodeBookService 密码本创建服务
 type CreateCodeBookService struct {
 	Title       string `form:"title" json:"title" binding:"required,min=2,max=30"`
-	ALias       string `form:"alias" json:"alias" binding:"max=200"`
+	Alias       string `form:"Alias" json:"Alias" binding:"max=200"`
 	Username    string `form:"username" json:"username" binding:"required,min=2,max=30"`
 	Code        string `form:"code" json:"code" binding:"required,min=8,max=40"`
 	CodeConfirm string `form:"code_confirm" json:"code_confirm" binding:"required,min=8,max=40"`
-	Nodes       string `form:"nodes" json:"nodes"`
+	Notes       string `form:"Notes" json:"Notes"`
 }
 
 // valid 验证表单
@@ -25,7 +25,7 @@ func (service *CreateCodeBookService) valid() *serializer.Response {
 	}
 
 	count := int64(0)
-	model.DB.Model(&model.CodeBook{}).Where("alias = ?", service.ALias).Count(&count)
+	model.DB.Model(&model.CodeBook{}).Where("Alias = ?", service.Alias).Count(&count)
 	if count > 0 {
 		return &serializer.Response{
 			Code: 400001,
@@ -39,10 +39,10 @@ func (service *CreateCodeBookService) valid() *serializer.Response {
 func (service *CreateCodeBookService) Create() serializer.Response {
 	codebook := model.CodeBook{
 		Title:    service.Title,
-		Alias:    service.ALias,
+		Alias:    service.Alias,
 		Username: service.Username,
-		Notes:    service.Nodes,
-		Status:   model.NewVersion,
+		Notes:    service.Notes,
+		Status:   model.Active,
 	}
 	if err := service.valid(); err != nil {
 		return *err

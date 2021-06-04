@@ -17,13 +17,6 @@ type CodeBook struct {
 	Status   string
 }
 
-const (
-	// NewVersion 正在使用的
-	NewVersion string = "new"
-	// OldVersion 老版本的
-	OldVersion string = "old"
-)
-
 // EncryptCode 加密密码
 func (codebook *CodeBook) EncryptCode(code string) error {
 	AesKey := []byte(os.Getenv("KEY_SECRET")) // 对称秘钥长度必须是16的倍数

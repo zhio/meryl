@@ -6,10 +6,10 @@ import "meryl/model"
 type CodeBook struct {
 	ID       uint   `json:"id"`
 	Title    string `json:"title"`
-	Alias    string `json:"alias"`
+	Alias    string `json:"Alias"`
 	Username string `json:"username"`
 	Code     string `json:"code"`
-	Nodes    string `json:"nodes"`
+	Notes    string `json:"Notes"`
 	Status   string `json:"status"`
 	CreateAt int64  `json:"create_at"`
 	UpdateAt int64  `json:"update_at"`
@@ -22,7 +22,7 @@ func BuildCodeBook(item model.CodeBook) CodeBook {
 		Alias:    item.Alias,
 		Username: item.Username,
 		Code:     item.DecryptCode(),
-		Nodes:    item.Notes,
+		Notes:    item.Notes,
 		Status:   item.Status,
 		CreateAt: item.CreatedAt.Unix(),
 		UpdateAt: item.UpdatedAt.Unix(),
